@@ -26,10 +26,8 @@ class RedisTestCommand extends Command
      */
     public function handle()
     {
-//        Redis::set("name1", []);
-//        $oldValue = Redis::get("name1");
-//        Redis::set("name1", array_merge($oldValue, ["Yes"]));
-//        var_dump(Redis::get("name1"));
+        Redis::set("name1", "YES");
+        var_dump(Redis::get("name1"));
 //        var_dump(Redis::getName());
         var_dump(Redis::ping());
 
