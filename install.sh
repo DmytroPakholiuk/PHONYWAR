@@ -61,6 +61,10 @@ function makeDocker() {
     docker volume create --name=le_shop_pg_data
   fi
 
+  if ! (docker network inspect lisa_splitter_network >/dev/null); then
+        docker network create --gateway 130.10.2.1 --subnet 130.10.2.0/24 phonywar_network
+  fi
+
   if ! docker-compose up -d; then
     output "docker-compose could not" error
     return ${error}

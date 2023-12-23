@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MessageStoreRequest;
+use App\Models\RedisMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redis;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @OA\Post(
@@ -63,14 +67,26 @@ class MessageController extends Controller
 
     public function store(MessageStoreRequest $request)
     {
+        $validated = $request->validated();
 
-        return $request->validated();
+        $message = new RedisMessage();
+
+        $message->content = $validated["content"];
+        $message->receiver_number = $validated["receiver_number"];
+        $message->created_at = Carbon::now()->toString();
+
+        return $message;
     }
 
     public function get(Request $request, $receiver_number)
     {
+        $data = Redis::get($receiver_number);
 
-        return $receiver_number;
+        if ($data === null){
+            throw new NotFoundHttpException();
+        }
+
+        return $data;
     }
 
 }

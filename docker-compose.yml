@@ -1,5 +1,8 @@
 version: '3.2'
 
+networks:
+    phonywar_network:
+        external: true
 
 services:
 
@@ -13,6 +16,9 @@ services:
             - ./docker/nginx/phonywar.conf:/etc/nginx/conf.d/phonywar.conf
         depends_on:
             - php
+        networks:
+            phonywar_network:
+                ipv4_address: ${PHONYWAR_DOCKER_NGINX_HOST:-130.10.2.3}
 
     php:
         #    image: php:8.1-fpm
@@ -29,13 +35,16 @@ services:
             -   redis
 #        command:
 #            -   php artisan serve
+        networks:
+            phonywar_network:
+                ipv4_address: ${PHONYWAR_DOCKER_PHP_HOST:-130.10.2.4}
 
     redis:
         container_name: phonywar_redis
         image: redis:latest
         #    restart: always
         ports:
-            - ${DOCKER_REDIS_PORT:-16379}:6379
+            - ${PHONYWAR_DOCKER_REDIS_PORT:-16379}:6379
         volumes:
             #      - /path/to/local/dаta:/root/redis
             - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
@@ -43,3 +52,7 @@ services:
             - REDIS_PASSWORD=${PHONYWAR_DOCKER_REDIS_PASSWORD}
             - REDIS_PORT=6379
             - REDIS_DATABASES=16
+        networks:
+            phonywar_network:
+                ipv4_address: ${PHONYWAR_DOCKER_REDIS_HOST:-130.10.2.5}
+

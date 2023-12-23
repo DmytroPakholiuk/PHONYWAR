@@ -26,13 +26,13 @@ class RedisTestCommand extends Command
      */
     public function handle()
     {
-        Redis::set("name1", "YES");
-        var_dump(Redis::get("name1"));
+        Redis::set("0000000000", "YES");
+        var_dump(Redis::get("0000000000"));
 //        var_dump(Redis::getName());
         var_dump(Redis::ping());
 
-        Redis::lpush("arr1", "VALUE");
-        var_dump(Redis::get("arr1"));
+//        Redis::lpush("arr1", "VALUE");
+//        var_dump(Redis::get("arr1"));
 
 //        $redis = Redis::connections();
 //        var_dump($redis);
