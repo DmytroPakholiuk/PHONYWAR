@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\RedisMessageFactory;
 use App\Http\Requests\MessageStoreRequest;
 use App\Models\RedisMessage;
 use Illuminate\Http\Request;
@@ -75,18 +76,26 @@ class MessageController extends Controller
         $message->receiver_number = $validated["receiver_number"];
         $message->created_at = Carbon::now()->toString();
 
-        return $message;
+        $factory = new RedisMessageFactory();
+        $factory->appendMessage($message);
+
+        return [
+            "message" => "Message sent",
+            "status" => "200"
+        ];
     }
 
     public function get(Request $request, $receiver_number)
     {
-        $data = Redis::get($receiver_number);
+        $factory = new RedisMessageFactory();
 
-        if ($data === null){
-            throw new NotFoundHttpException();
-        }
+        $data = $factory->getMessagesFor($receiver_number);
 
-        return $data;
+        return [
+            "message" => "The messages for number $receiver_number:",
+            "data" => $data,
+            "status" => "200"
+        ];
     }
 
 }

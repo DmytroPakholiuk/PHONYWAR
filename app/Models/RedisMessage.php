@@ -22,7 +22,7 @@ class RedisMessage implements Arrayable
     public function toArray()
     {
         return [
-            "id" => $this->id,
+            "content" => $this->content,
             "receiver_number" => $this->receiver_number,
             "created_at" => $this->created_at
         ];
