@@ -31,6 +31,9 @@ class RedisTestCommand extends Command
 //        var_dump(Redis::getName());
         var_dump(Redis::ping());
 
+        Redis::lpush("arr1", "VALUE");
+        var_dump(Redis::get("arr1"));
+
 //        $redis = Redis::connections();
 //        var_dump($redis);
     }

@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "PHONYWAR API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/messages/send": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Send a message to the phone number",
+                "operationId": "df024e9aac87570ed8f2bb2a8a865632",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "receiver_number": {
+                                                "type": "integer",
+                                                "example": 965555555
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "Lorem Ipsum"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/messages/{receiver_number}": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "operationId": "2b1ab73c55700135ef06a4fcf9128391",
+                "parameters": [
+                    {
+                        "name": "receiver_number",
+                        "in": "path",
+                        "description": "Phone number of that receiver",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "An int value.",
+                                "value": "0965555555"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
