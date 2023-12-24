@@ -23,6 +23,7 @@ function output() {
   esac
 }
 
+# I stole that code to ease down the Yes/No questions but I never had to actually use it
 function yesno() {
   default=''
   if [[ ! (-z $2)  ]]; then
@@ -57,9 +58,6 @@ function makeDocker() {
     output "docker-compose.yml not found. Can not continue." error
     return ${error}
   fi
-  if ! (docker volume inspect le_shop_pg_data >/dev/null); then
-    docker volume create --name=le_shop_pg_data
-  fi
 
   if ! (docker network inspect lisa_splitter_network >/dev/null); then
         docker network create --gateway 130.10.2.1 --subnet 130.10.2.0/24 phonywar_network
@@ -74,12 +72,15 @@ function makeDocker() {
   return ${success}
 }
 
+# copies .example.env to .env
 function copyEnv() {
   if ! [[ -f '.env' ]]; then
       cp .example.env .env
   fi
 }
 
+# for some reason Laravel was giving me an error regarding lack of access to storage and logs.
+# This is a pretty bad thing to do, but I can't think of a better workaround
 function chmodStorage() {
   chmod -R 777 storage
 }
@@ -94,6 +95,7 @@ function initialiseApi() {
   output "installation of laravel packages successful" success
 }
 
+# Writes the project into your local DNS registry if not present already
 function checkHosts() {
     HOSTS='127.0.0.1 phonywar.com'
     if grep "${HOSTS}" /etc/hosts | grep -v '^#'; then

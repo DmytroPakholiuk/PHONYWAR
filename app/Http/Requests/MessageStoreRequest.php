@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * This request is used to validate incoming data on message creation request.
+ */
 class MessageStoreRequest extends FormRequest
 {
     /**

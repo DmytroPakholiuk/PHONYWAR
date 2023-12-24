@@ -151,7 +151,6 @@ class MessageController extends Controller
     public function get(Request $request, $receiver_number)
     {
         $factory = new RedisMessageFactory();
-
         $data = $factory->getMessagesFor($receiver_number);
         if (empty($data)){
             throw new NotFoundHttpException();

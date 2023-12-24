@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * This model represents a message that we would store in Redis
+ */
 class RedisMessage implements Arrayable
 {
     public string $receiver_number;

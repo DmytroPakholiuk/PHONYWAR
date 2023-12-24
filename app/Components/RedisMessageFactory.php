@@ -5,8 +5,12 @@ namespace App\Components;
 use App\Models\RedisMessage;
 use Illuminate\Support\Facades\Redis;
 use Nette\Utils\Json;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Nette\Utils\JsonException;
 
+/**
+ * This is a class for manipulation with RedisMessage classes because writing data manipulation
+ * logic inside a model might not be very SingleResponsibility-ish
+ */
 class RedisMessageFactory
 {
     /**
@@ -28,8 +32,9 @@ class RedisMessageFactory
      *
      * @param $receiver_number
      * @return RedisMessage[]
+     * @throws JsonException
      */
-    public function getMessagesFor($receiver_number)
+    public function getMessagesFor($receiver_number): array
     {
         $redisData = Redis::lrange($receiver_number, 0, -1);
         $returnCollection = [];
@@ -40,14 +45,27 @@ class RedisMessageFactory
         return $returnCollection;
     }
 
-    protected function makeMessageFromJson(string $json)
+    /**
+     * Makes a message from JSON-encoded string
+     *
+     * @param string $json
+     * @return RedisMessage
+     * @throws \Nette\Utils\JsonException
+     */
+    protected function makeMessageFromJson(string $json): RedisMessage
     {
         /**
          * @var \StdClass $decodedArray
          */
-        return Json::decode($json);
+//        return Json::decode($json);
         $decodedArray = Json::decode($json);
-        var_dump($decodedArray);die();
+
+        $redisMessage = new RedisMessage();
+        $redisMessage->receiver_number = $decodedArray->receiver_number;
+        $redisMessage->content = $decodedArray->content;
+        $redisMessage->created_at = $decodedArray->created_at;
+
+        return $redisMessage;
     }
 
 

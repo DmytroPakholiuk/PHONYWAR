@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
+/**
+ * This is an auxiliary command to use to ensure that Redis is connected correctly.
+ * Bears no usefull business-logic whatsoever
+ */
 class RedisTestCommand extends Command
 {
     /**
