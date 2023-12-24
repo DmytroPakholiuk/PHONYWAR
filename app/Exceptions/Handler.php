@@ -27,7 +27,8 @@ class Handler extends ExceptionHandler
         $this->renderable(function (NotFoundHttpException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Not found. The data you are seeking either does not exist or is expired.'
+                    'message' => 'Not found. The data you are seeking either does not exist or is expired.',
+                    "status" => 404
                 ], 404);
             }
         });

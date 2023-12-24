@@ -23,12 +23,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *                      @OA\Property(
  *                          property="receiver_number",
  *                          type="integer",
- *                          example=0965555555
+ *                          example=09655555555,
+ *                          description="A 10-digit phone number. No spaces or hyphens."
  *                      ),
  *                      @OA\Property(
  *                          property="content",
  *                          type="string",
- *                          example="Lorem Ipsum"
+ *                          example="Lorem Ipsum",
+ *                          description="Text content for the message."
  *                      ),
  *                  ),
  *             }
@@ -38,6 +40,39 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *     @OA\Response(
  *         response=200,
  *         description="OK",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message", type="string", example="Message sent",
+ *             ),
+ *             @OA\Property(
+ *                 property="status", type="integer", example=200
+ *             ),
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=422,
+ *         description="Unprocessable Content",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message", type="string", example="The content field is required. (and 1 more error)"
+ *             ),
+ *             @OA\Property(
+ *                 property="errors", type="object",
+ *                 @OA\Property(
+ *                     property="receiver_number", type="array", @OA\Items(
+ *                         type="string",
+ *                         example="The receiver number field format is invalid."
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="content", type="array", @OA\Items(
+ *                         type="string",
+ *                         example="The content field is required."
+ *                     )
+ *                 )
+ *             )
+ *         )
  *     ),
  * ),
  *
@@ -54,12 +89,40 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *         name="receiver_number",
  *         required=true,
  *         @OA\Schema(type="integer"),
- *         @OA\Examples(example="int", value="0965555555", summary="An int value."),
+ *         @OA\Examples(example="int", value="0000000000", summary="An int value."),
  *     ),
  *
  *     @OA\Response(
  *         response=200,
  *         description="OK",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message", type="string", example="The messages for number 0000000000:"
+ *             ),
+ *             @OA\Property(
+ *                 property="status", type="integer", example=200
+ *             ),
+ *             @OA\Property(
+ *                 property="data", type="array", @OA\Items(
+ *                     @OA\Property(property="receiver_number", type="integer", example=0000000000),
+ *                     @OA\Property(property="content", type="string", example="Lorem Ipsum"),
+ *                     @OA\Property(property="created_at", type="string", example="Sun Dec 24 2023 19:29:55 GMT+0000"),
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=404,
+ *         description="Not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message", type="string", example="Not found. The data you are seeking either does not exist or is expired."
+ *             ),
+ *             @OA\Property(
+ *                 property="status", type="integer", example=404
+ *             )
+ *         )
  *     ),
  * )
  */
@@ -81,7 +144,7 @@ class MessageController extends Controller
 
         return [
             "message" => "Message sent",
-            "status" => "200"
+            "status" => 200
         ];
     }
 
@@ -90,11 +153,14 @@ class MessageController extends Controller
         $factory = new RedisMessageFactory();
 
         $data = $factory->getMessagesFor($receiver_number);
+        if (empty($data)){
+            throw new NotFoundHttpException();
+        }
 
         return [
             "message" => "The messages for number $receiver_number:",
             "data" => $data,
-            "status" => "200"
+            "status" => 200
         ];
     }
 

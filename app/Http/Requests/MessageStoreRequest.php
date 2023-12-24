@@ -23,7 +23,7 @@ class MessageStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "content" => "string|required|max:255",
+            "content" => "string|required|max:65535",
             "receiver_number" => "numeric|required|regex:/^[0-9]{10}$/"
         ];
     }
