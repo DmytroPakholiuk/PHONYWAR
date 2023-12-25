@@ -57,7 +57,6 @@ class RedisMessageFactory
         /**
          * @var \StdClass $decodedArray
          */
-//        return Json::decode($json);
         $decodedArray = Json::decode($json);
 
         $redisMessage = new RedisMessage();
