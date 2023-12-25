@@ -1,0 +1,188 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "PHONYWAR API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/messages/send": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Send a message to the phone number",
+                "operationId": "df024e9aac87570ed8f2bb2a8a865632",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "receiver_number": {
+                                                "description": "A 10-digit phone number. No spaces or hyphens.",
+                                                "type": "integer",
+                                                "example": 9655555555
+                                            },
+                                            "content": {
+                                                "description": "Text content for the message.",
+                                                "type": "string",
+                                                "example": "Lorem Ipsum"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Message sent"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The content field is required. (and 1 more error)"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "receiver_number": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The receiver number field format is invalid."
+                                                    }
+                                                },
+                                                "content": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The content field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/messages/{receiver_number}": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "operationId": "2b1ab73c55700135ef06a4fcf9128391",
+                "parameters": [
+                    {
+                        "name": "receiver_number",
+                        "in": "path",
+                        "description": "Phone number of that receiver",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "An int value.",
+                                "value": "0000000000"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The messages for number 0000000000:"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "receiver_number": {
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "content": {
+                                                        "type": "string",
+                                                        "example": "Lorem Ipsum"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "Sun Dec 24 2023 19:29:55 GMT+0000"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found. The data you are seeking either does not exist or is expired."
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
